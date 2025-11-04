@@ -25,8 +25,6 @@ mutex = Lock()
 
 def monitor_board(board_name: str):
     """Run `tycmd monitor -b board_name` and log output."""
-    log_path = os.path.join(LOG_DIR, f"{board_name}.log")
-
     logging.info(f"Starting monitor for board: {board_name}")
 
     # Create a pseudo-terminal
@@ -44,26 +42,23 @@ def monitor_board(board_name: str):
         # Close the slave fd in the parent process
         os.close(slave)
 
-        with open(log_path, "a") as logfile:
-            while True:
-                # Check if data is available to read
-                rlist, _, _ = select.select([master], [], [], 0.1)
+        while True:
+            # Check if data is available to read
+            rlist, _, _ = select.select([master], [], [], 0.1)
 
-                if rlist:
-                    try:
-                        data = os.read(master, 1024).decode('utf-8', errors='replace')
-                        if data:
-                            for line in data.splitlines():
-                                if line.strip():
-                                    logfile.write(line + "\n")
-                                    logfile.flush()
-                                    logging.info(f"[{board_name}] {line}")
-                    except OSError:
-                        break
-
-                # Check if process has exited
-                if process.poll() is not None:
+            if rlist:
+                try:
+                    data = os.read(master, 1024).decode('utf-8', errors='replace')
+                    if data:
+                        for line in data.splitlines():
+                            if line.strip():
+                                logging.info(line)
+                except OSError:
                     break
+
+            # Check if process has exited
+            if process.poll() is not None:
+                break
 
         logging.info(f"Monitor for {board_name} wait for exit.")
         process.wait()
