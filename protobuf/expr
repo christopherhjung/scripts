@@ -1,0 +1,93 @@
+
+/*
+message OpExpr{
+    Kind kind = 1;
+    repeated uint32 outputs = 2;
+    repeated uint32 inputs = 3;
+
+    enum Kind{
+        IDENT = 0;
+        PROBE = 1;
+        SUM = 2;
+        MUL = 3;
+        SQUARE = 4;
+        DIV = 5;
+        ROOT = 6;
+    }
+}
+
+message LitExpr{
+    double value = 1;
+}
+
+message Expr{
+    oneof kind{
+        OpExpr op_expr = 1;
+        LitExpr lit_expr = 2;
+    }
+}
+
+message ExprConfig{
+    repeated OpExpr exprs = 1;
+}
+*/
+
+message LitExpr {
+    double value = 1;
+}
+
+message IdentExpr {
+    uint32 output = 1;
+    uint32 input = 2;
+}
+
+message ProbeExpr {
+    uint32 input = 1;
+    double gain = 2;
+    double offset = 3;
+}
+
+message SumExpr {
+    uint32 output = 1;
+    repeated uint32 inputs = 2;
+}
+
+message MulExpr {
+    uint32 output = 1;
+    uint32 lhs = 2;
+    uint32 rhs = 3;
+}
+
+message SquareExpr {
+    uint32 output = 1;
+    uint32 input  = 2;
+}
+
+message DivExpr {
+    uint32 output = 1;
+    uint32 lhs = 2;
+    uint32 rhs = 3;
+}
+
+message RootExpr {
+    uint32 output = 1;
+    uint32 input = 2;
+}
+
+message SwitchExpr {
+    uint32 output = 1;
+    uint32 input = 2;
+}
+
+message Expr {
+    oneof kind {
+        LitExpr    lit_expr    = 1;
+        IdentExpr  ident_expr  = 2;
+        ProbeExpr  probe_expr  = 3;
+        SumExpr    sum_expr    = 4;
+        MulExpr    mul_expr    = 5;
+        SquareExpr square_expr = 6;
+        DivExpr    div_expr    = 7;
+        RootExpr   root_expr   = 8;
+    }
+}
